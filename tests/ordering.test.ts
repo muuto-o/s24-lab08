@@ -23,33 +23,69 @@ describe('Test prioritization', () => {
   const cardStatus6 = newCardStatus(flashCard6)
   const cardStatus7 = newCardStatus(flashCard7)
   const cardStatus8 = newCardStatus(flashCard8)
+
   cardStatus1.recordResult(false)
   cardStatus1.recordResult(false)
   cardStatus1.recordResult(false)
+
   cardStatus2.recordResult(true)
   cardStatus2.recordResult(true)
   cardStatus2.recordResult(false)
+
   cardStatus3.recordResult(true)
   cardStatus3.recordResult(false)
   cardStatus3.recordResult(true)
+
   cardStatus4.recordResult(true)
   cardStatus4.recordResult(false)
   cardStatus4.recordResult(false)
+
   cardStatus5.recordResult(false)
   cardStatus5.recordResult(true)
   cardStatus5.recordResult(true)
+
   cardStatus6.recordResult(false)
   cardStatus6.recordResult(true)
   cardStatus6.recordResult(false)
+
   cardStatus7.recordResult(false)
   cardStatus7.recordResult(false)
   cardStatus7.recordResult(true)
+
   cardStatus8.recordResult(true)
   cardStatus8.recordResult(true)
   cardStatus8.recordResult(true)
   // Covering all combinations of CardStatus with three recorded results.
 
   const cards: CardStatus[] = [cardStatus1, cardStatus2, cardStatus3, cardStatus4, cardStatus5, cardStatus6, cardStatus7, cardStatus8]
+
+  test('Test Flashcard functions',()=>{
+    expect(flashCard1.getQuestion()).toBe('Question1')
+    expect(flashCard1.getAnswer()).toBe('Answer1')
+
+    expect(flashCard1.checkSuccess('Answer1')).toBe(true)
+    expect(flashCard1.checkSuccess('Answer1 ')).toBe(true)
+    expect(flashCard1.checkSuccess('AnswEr1')).toBe(true)
+    expect(flashCard1.checkSuccess('Answer2')).toBe(false)
+
+    expect(flashCard1.toString()).toBe('FlashCard[Question1, Answer1]')
+
+    const newCard = newFlashCard("Question1", "Answer1")
+    expect(flashCard1.equals(newCard)).toBe(true)
+    expect(flashCard1.equals(flashCard2)).toBe(false)
+  })
+
+  test('Test cardsStatus',()=>{
+    const newCard = newFlashCard("Question1", "Answer1")
+    const CardStatusNew = newCardStatus(newCard)
+
+    CardStatusNew.recordResult(true)
+    expect(CardStatusNew.getCard()).toEqual(newCard)
+    const result = CardStatusNew.getResults()
+    expect(result[0].success).toBe(true)
+    CardStatusNew.clearResults()
+    expect(CardStatusNew.getResults()).toEqual([])
+  })
 
   test('Test newMostMistakesFirstSorter', () => {
     const cardsSorted: CardStatus[] = createMostMistakesFirstSorter().reorganize(cards)
@@ -63,7 +99,18 @@ describe('Test prioritization', () => {
     expect(cardsSorted[7]).toEqual(cardStatus8)
   })
 
+ 
+
   test('Test recentRecentMistakesFirstSorter', () => {
+    cardStatus1.recordResult(false)
+    cardStatus2.recordResult(false)
+    cardStatus3.recordResult(true)
+    cardStatus4.recordResult(false)
+    cardStatus5.recordResult(true)
+    cardStatus6.recordResult(false)
+    cardStatus7.recordResult(true)
+    cardStatus8.recordResult(true)
+
     const cardsSorted: CardStatus[] = createRecentMistakesFirstSorter().reorganize(cards)
     expect(cardsSorted[0]).toEqual(cardStatus1)
     expect(cardsSorted[1]).toEqual(cardStatus2)

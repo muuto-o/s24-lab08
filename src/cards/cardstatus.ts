@@ -1,5 +1,10 @@
 import { FlashCard } from './flashcard.js'
 
+interface SuccessWithTimestamp {
+    success : boolean
+    timestamp : Date
+}
+
 interface CardStatus {
   /**
    * Retrieves the {@link edu.cmu.cs214.hw1.cards.FlashCard} associated with this {@code CardStatus}.
@@ -13,7 +18,7 @@ interface CardStatus {
    *
    * @return A list of boolean's indicating the recorded outcome of previous attempts to answer this card.
    */
-  getResults: () => boolean[]
+  getResults: () => SuccessWithTimestamp[]
 
   /**
    * Updates the internal success tracker with a new answering outcome.
@@ -34,11 +39,11 @@ interface CardStatus {
  * @param card The {@link FlashCard} card to track answer correctness for.
  */
 function newCardStatus (card: FlashCard): CardStatus {
-  let successes: boolean[] = []
+  let successes: SuccessWithTimestamp[] = []
   return {
     getCard: function (): FlashCard { return card },
-    getResults: function (): boolean[] { return successes.slice() },
-    recordResult: function (success: boolean): void { successes.push(success) },
+    getResults: function (): SuccessWithTimestamp[] { return successes.slice() },
+    recordResult: function (success: boolean): void { successes.push({success, timestamp : new Date()}) },
     clearResults: function (): void { successes = [] }
   }
 };

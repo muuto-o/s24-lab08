@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES6",
-        "module": "commonjs",      // Change to CommonJS
+        "module": "ESNext",      // Change to CommonJS
         "sourceMap": true,
         "strict": true,
         "esModuleInterop": true,
